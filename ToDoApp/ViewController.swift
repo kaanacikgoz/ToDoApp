@@ -49,6 +49,7 @@ class ViewController: UIViewController {
             guard let text = textField.text else { return }
             let model = Daily(context: self.context)
             model.routine = text
+            self.dataArray.append(model)
             self.saveData()
         }
         
@@ -97,7 +98,6 @@ class ViewController: UIViewController {
         } catch {
             print("Error reading data in coredata: \(error)")
         }
-        tableView.reloadData()
     }
 
 
@@ -117,10 +117,11 @@ extension ViewController:UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
+            context.delete(dataArray[indexPath.row])
             dataArray.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
+            saveData()
         }
-        tableView.reloadData()
     }
     
 }
