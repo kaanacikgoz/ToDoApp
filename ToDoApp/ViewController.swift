@@ -29,6 +29,8 @@ class ViewController: UIViewController {
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: #selector(buttonTapped))
         navItem.rightBarButtonItem = addButton
         navBar.items = [navItem]
+        navBar.barTintColor = .lightGray
+        navBar.tintColor = .white
         
         return navBar
     }()
@@ -47,10 +49,14 @@ class ViewController: UIViewController {
         let alert = UIAlertController(title: "Add", message: "enter the data you want to add please", preferredStyle: .alert)
         let okAction = UIAlertAction(title: "OK", style: .default) { _ in
             guard let text = textField.text else { return }
-            let model = Daily(context: self.context)
-            model.routine = text
-            self.dataArray.append(model)
-            self.saveData()
+            if text == "" {
+                self.notEmptyAlert()
+            } else {
+                let model = Daily(context: self.context)
+                model.routine = text
+                self.dataArray.append(model)
+                self.saveData()
+            }
         }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
@@ -60,6 +66,13 @@ class ViewController: UIViewController {
         
         alert.addAction(okAction)
         alert.addAction(cancelAction)
+        present(alert, animated: true)
+    }
+    
+    private func notEmptyAlert() {
+        let alert = UIAlertController(title: "Error", message: "You must enter data", preferredStyle: .alert)
+        let action = UIAlertAction(title: "OK", style: .cancel)
+        alert.addAction(action)
         present(alert, animated: true)
     }
 
